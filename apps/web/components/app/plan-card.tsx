@@ -4,19 +4,19 @@ import { useRouter } from "next/navigation";
 import { format, parseISO } from "date-fns";
 import { Check, MoreHorizontal, Trash2 } from "lucide-react";
 import { toast } from "sonner";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { PlanItemInput } from "./plan-item-input";
-import { PlanItemRow } from "./plan-item-row";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TaskRow } from "./task-row";
 import { TaskInput } from "./task-input";
 import { api, ApiError } from "@/lib/api";
 import { cn } from "@/lib/utils";
-import type { GoalPlan } from "@/lib/types";
+import type { GoalPlan, Task } from "@/lib/types";
 
 function formatPeriod(start: string, end: string) {
   const s = parseISO(start);
@@ -32,7 +32,7 @@ function formatPeriod(start: string, end: string) {
   return `${format(s, "MMM d, yyyy")} – ${format(e, "MMM d, yyyy")}`;
 }
 
-export function PlanCard({ plan }: { plan: GoalPlan }) {
+export function PlanCard({ plan, tasks }: { plan: GoalPlan; tasks: Task[] }) {
   const router = useRouter();
 
   async function remove() {
@@ -45,11 +45,19 @@ export function PlanCard({ plan }: { plan: GoalPlan }) {
     }
   }
 
-  const { progress, effective_status: status } = plan;
+  const total = tasks.length;
+  const completed = tasks.filter((task) => task.completed_at).length;
+  const percent = total ? Math.round((completed / total) * 100) : 0;
+  const status =
+    total > 0 && completed === total
+      ? "completed"
+      : plan.effective_status === "missed"
+        ? "missed"
+        : "active";
 
   return (
     <Card className="p-0 overflow-hidden animate-fade-up">
-      <div className="p-6 pb-4">
+      <div className="p-5 pb-4">
         <div className="flex items-start justify-between gap-3">
           <div className="min-w-0">
             <h2 className="text-lg font-semibold tracking-tight truncate">
@@ -78,12 +86,12 @@ export function PlanCard({ plan }: { plan: GoalPlan }) {
           </DropdownMenu>
         </div>
 
-        <div className="mt-5">
+        <div className="mt-4">
           <div className="flex items-center justify-between text-xs mb-2">
-            <span className="text-muted">{progress.label}</span>
+            <span className="text-muted">{plan.progress.label}</span>
             <span className="font-medium tabular-nums">
-              {progress.completed} of {progress.total} complete
-              {progress.total > 0 && ` · ${progress.percent}%`}
+              {completed} of {total} tasks complete
+              {total > 0 && ` · ${percent}%`}
             </span>
           </div>
           <div className="h-1.5 w-full rounded-full bg-subtle overflow-hidden">
@@ -96,7 +104,7 @@ export function PlanCard({ plan }: { plan: GoalPlan }) {
                     ? "bg-muted"
                     : "bg-accent",
               )}
-              style={{ width: `${progress.percent}%` }}
+              style={{ width: `${percent}%` }}
             />
           </div>
         </div>
@@ -120,16 +128,19 @@ export function PlanCard({ plan }: { plan: GoalPlan }) {
       </div>
 
       <div className="border-t border-border/60">
-        {plan.items.length > 0 && (
+        {tasks.length > 0 ? (
           <div className="divide-y divide-border/60 py-1">
-            {plan.items.map((item) => (
-              <PlanItemRow key={item.id} item={item} />
+            {tasks.map((task) => (
+              <TaskRow key={task.id} task={task} />
             ))}
           </div>
+        ) : (
+          <EmptyState
+            title="No tasks yet"
+            description="Add the next action for this goal."
+            className="py-8"
+          />
         )}
-        <div className="border-t border-border/60">
-          <PlanItemInput planId={plan.id} />
-        </div>
         <div className="border-t border-border/60">
           <TaskInput goalId={plan.id} placeholder="Add a task to this goal..." />
         </div>

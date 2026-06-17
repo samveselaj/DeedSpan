@@ -28,6 +28,7 @@ router = APIRouter()
 items_router = APIRouter()
 
 FIXED_PERIODS = {"week", "month", "year", "decade"}
+MAX_PLANS_PER_PERIOD = 20
 
 
 # ---------- helpers ----------
@@ -188,18 +189,21 @@ async def create_plan(
         assert payload.period_start is not None and payload.period_end is not None
         period_start, period_end = payload.period_start, payload.period_end
 
-    existing = await db.scalar(
-        select(GoalPlan).where(
-            GoalPlan.user_id == user.id,
-            GoalPlan.period_type == payload.period_type,
+    count_stmt = select(func.count()).select_from(GoalPlan).where(
+        GoalPlan.user_id == user.id,
+        GoalPlan.period_type == payload.period_type,
+        GoalPlan.deleted_at.is_(None),
+    )
+    if payload.period_type in FIXED_PERIODS:
+        count_stmt = count_stmt.where(
             GoalPlan.period_start == period_start,
             GoalPlan.period_end == period_end,
-            GoalPlan.deleted_at.is_(None),
         )
-    )
-    if existing:
+    current_count = await db.scalar(count_stmt)
+    if (current_count or 0) >= MAX_PLANS_PER_PERIOD:
         raise HTTPException(
-            status.HTTP_409_CONFLICT, "A goal for this period already exists"
+            status.HTTP_409_CONFLICT,
+            f"You can have up to {MAX_PLANS_PER_PERIOD} goals for this timeline",
         )
 
     plan = GoalPlan(

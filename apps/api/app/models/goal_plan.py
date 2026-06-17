@@ -31,14 +31,12 @@ class GoalPlan(Base):
         ),
         CheckConstraint("period_end >= period_start", name="goal_plans_period_order_check"),
         Index("ix_goal_plans_user", "user_id"),
-        # One plan per (user, type, exact period) — partial so soft-deleted rows don't block.
         Index(
-            "ix_goal_plans_unique_period",
+            "ix_goal_plans_period",
             "user_id",
             "period_type",
             "period_start",
             "period_end",
-            unique=True,
             postgresql_where=text("deleted_at IS NULL"),
         ),
     )

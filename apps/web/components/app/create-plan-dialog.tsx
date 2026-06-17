@@ -189,14 +189,14 @@ function labelFor(p: PeriodType): string {
 function periodHelp(p: PeriodType): string {
   switch (p) {
     case "week":
-      return "Spans the current Monday through Sunday. One per week.";
+      return "Spans the current Monday through Sunday.";
     case "month":
-      return "Spans the current calendar month. One per month.";
+      return "Spans the current calendar month.";
     case "year":
       return "Spans January 1 through December 31 of the current year.";
     case "decade":
       return "Spans the current year through ten years from now.";
     case "custom":
-      return "Pick any start and end date. You can have multiple custom goals.";
+      return "Pick any start and end date.";
   }
 }

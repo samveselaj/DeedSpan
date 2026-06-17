@@ -36,5 +36,8 @@ Thumbs.db
 npm-debug.log*
 pnpm-debug.log*
 
+# local AI notes
+AIREADME.md
+
 # build
 build/
