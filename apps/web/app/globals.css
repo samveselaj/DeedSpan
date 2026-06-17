@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg: 0 0% 99%;
+    --surface: 0 0% 100%;
+    --fg: 220 13% 12%;
+    --muted: 220 9% 46%;
+    --subtle: 220 14% 96%;
+    --border: 220 13% 91%;
+    --accent: 218 90% 52%;
+    --accent-fg: 0 0% 100%;
+    --danger: 0 70% 55%;
+    --success: 152 56% 42%;
+    --shadow: 220 40% 10%;
+  }
+
+  .dark {
+    --bg: 222 14% 7%;
+    --surface: 222 14% 10%;
+    --fg: 210 20% 96%;
+    --muted: 215 12% 65%;
+    --subtle: 222 12% 14%;
+    --border: 222 12% 18%;
+    --accent: 213 94% 68%;
+    --accent-fg: 0 0% 100%;
+    --danger: 0 70% 60%;
+    --success: 152 56% 50%;
+    --shadow: 0 0% 0%;
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+
+  html,
+  body {
+    background-color: hsl(var(--bg));
+    color: hsl(var(--fg));
+    font-feature-settings: "cv11", "ss01";
+  }
+
+  html {
+    transition: background-color 200ms cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  ::selection {
+    background-color: hsl(var(--accent) / 0.18);
+  }
+}
+
+@layer utilities {
+  .ring-focus {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+  }
+}

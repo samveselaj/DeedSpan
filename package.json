@@ -1,0 +1,12 @@
+{
+  "name": "aether",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:web": "pnpm --filter @aether/web dev",
+    "dev:api": "cd apps/api && .venv/bin/uvicorn app.main:app --reload --port 8000",
+    "dev:mobile": "pnpm --filter @aether/mobile start",
+    "build:web": "pnpm --filter @aether/web build"
+  },
+  "packageManager": "pnpm@9.12.0"
+}
