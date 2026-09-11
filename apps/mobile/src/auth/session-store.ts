@@ -1,6 +1,6 @@
 import * as SecureStore from "expo-secure-store";
 
-const KEY = "aether.session.token";
+const KEY = "deedspan.session.token";
 
 export async function readSessionToken(): Promise<string | null> {
   try {

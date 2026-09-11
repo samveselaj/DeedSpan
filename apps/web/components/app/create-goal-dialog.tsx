@@ -71,7 +71,7 @@ export function CreateGoalDialog() {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-1.5">
             <Label htmlFor="title">Title</Label>
-            <Input id="title" placeholder="e.g. Ship Profectus v1" {...register("title")} />
+            <Input id="title" placeholder="e.g. Ship DeedSpan v1" {...register("title")} />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="description">Description</Label>

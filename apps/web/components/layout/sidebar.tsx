@@ -3,7 +3,7 @@ import { NavContent } from "./nav-content";
 
 export function Sidebar({ user }: { user: User }) {
   return (
-    <aside className="hidden md:flex w-60 shrink-0 flex-col border-r border-border bg-bg/60 backdrop-blur">
+    <aside className="sticky top-0 hidden h-screen max-h-screen w-60 shrink-0 flex-col overflow-hidden border-r border-border bg-surface/20 md:flex">
       <NavContent user={user} />
     </aside>
   );

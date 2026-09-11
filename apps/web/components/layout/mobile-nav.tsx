@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import type { User } from "@/lib/types";
 import { NavContent } from "./nav-content";
 
-export const MOBILE_NAV_OPEN_EVENT = "aether:nav-open";
+export const MOBILE_NAV_OPEN_EVENT = "deedspan:nav-open";
 
 export function MobileNav({ user }: { user: User }) {
   const [open, setOpen] = React.useState(false);

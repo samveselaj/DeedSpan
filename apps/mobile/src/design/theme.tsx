@@ -13,7 +13,7 @@ type ThemeContext = {
   setPreference: (next: ThemePreference) => void;
 };
 
-const STORAGE_KEY = "aether.theme.preference";
+const STORAGE_KEY = "deedspan.theme.preference";
 
 const Ctx = React.createContext<ThemeContext | null>(null);
 

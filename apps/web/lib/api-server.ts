@@ -4,7 +4,7 @@ import { ApiError, buildRequest, parseOrThrow, type FetchOptions } from "./api";
 const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 const INTERNAL_API_URL = process.env.API_INTERNAL_URL ?? PUBLIC_API_URL;
 
-const CSRF_COOKIE = "aether_csrf";
+const CSRF_COOKIE = "deedspan_csrf";
 
 export async function apiServer<T = unknown>(
   path: string,

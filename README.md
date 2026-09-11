@@ -1,92 +1,95 @@
-# Profectus
+# DeedSpan
 
-A calm, minimal productivity & accountability platform.
-Web, mobile, and one FastAPI backend.
+DeedSpan is a personal productivity app for tasks, goals, habits, and daily reflection. It brings the plan and the follow-through into one place: decide what matters, track the work, and review what actually happened.
 
-## Features
+The repository contains a Next.js web app, an Expo mobile app, and a shared Python API backed by PostgreSQL.
 
-- **Today** — quick capture of tasks, daily habits, this week's goal at a glance
-- **Tasks** — open / completed / all, with optimistic toggles
-- **Goals** — week / month / year / 10-year / custom timelines with checklist items
-- **Habits** — daily streak tracking, one tap to mark done
-- **Journal** — structured daily execution review
-- **Admin** — minimal user management + 7-day activity metrics (web only)
-- **Light / Dark / System** theme, persisted
+## What you can do
 
-## Stack
+The web app includes:
 
-- **Web** — Next.js 15 (App Router), React 19, TypeScript strict, Tailwind v3.4, hand-rolled shadcn primitives over Radix UI
-- **Mobile** — Expo SDK 54, React Native 0.81, Expo Router 6, TypeScript strict, `expo-secure-store` for session persistence
-- **API** — FastAPI, Python 3.12+, SQLAlchemy 2.0 async, Pydantic v2, Alembic
-- **DB** — PostgreSQL 15+
-- **Auth** — opaque session IDs in Postgres
-  - Web: HTTP-only `aether_sid` cookie + CSRF double-submit
-  - Mobile: `Authorization: Bearer <session_id>` (no CSRF needed)
-  - Same `sessions` table, same lifecycle
+- **Today:** see open tasks, check off habits, and review a weekly goal.
+- **Tasks and goals:** keep standalone tasks or attach them to goals with weekly, monthly, yearly, decade, or custom timelines.
+- **Habits:** track daily, weekly, or monthly routines and their streaks.
+- **Journal:** record what you did, what you missed, what you learned, and what to do tomorrow. Revisit entries by date.
+- **Accounts and admin:** register, sign in, and sign out. Admins can manage user roles, disable accounts, and view basic activity counts.
 
-## Quick start
+The web interface adapts to smaller screens and supports light, dark, and system appearance.
+
+## How it works
+
+Both apps send requests to FastAPI, which validates input, checks who is signed in, and reads or writes their records in PostgreSQL. Next.js loads initial page data on the server; browser components handle edits and refresh the displayed data.
+
+Passwords are hashed with Argon2. Login sessions are stored in the database: the web app uses an HTTP-only cookie with CSRF protection for changes, while mobile sends a session token stored through Expo SecureStore. The API checks record ownership and restricts admin endpoints by role.
+
+| Part | Technologies | Location |
+| --- | --- | --- |
+| Web | Next.js 15, React 19, TypeScript, Tailwind CSS 3, Radix UI | `apps/web` |
+| Mobile | Expo SDK 54, React Native 0.81, Expo Router | `apps/mobile` |
+| API | Python 3.12, FastAPI, Pydantic, async SQLAlchemy | `apps/api` |
+| Database | PostgreSQL; Alembic migrations track schema changes | `apps/api/alembic` |
+
+## Getting started
+
+Use macOS, Linux, or Windows PowerShell. Install Node.js with npm, the `uv` Python package manager, and PostgreSQL, then start PostgreSQL. Make sure `node`, `npm`, `uv`, and `createdb` are available in your terminal. Run the following from the repository root.
+
+### 1. Install dependencies and create configuration files
 
 ```bash
-# 1. Postgres
-createdb aether
+npx pnpm@9.12.0 install
+cp apps/api/.env.example apps/api/.env
+cp apps/web/.env.example apps/web/.env.local
+```
 
-# 2. Install everything (root)
-pnpm install
+The repository uses pnpm for dependency installation; `npx` runs the pinned version without a global pnpm installation. Once installed, the development commands below use npm.
 
-# 3. API
+In `apps/api/.env`, set `DATABASE_URL` to your PostgreSQL username, password, host, port, and database name. Replace the `SECRET_KEY` placeholder with a long random value. Keep `FRONTEND_URL=http://localhost:3000` for the default web port.
+
+In `apps/web/.env.local`, keep `NEXT_PUBLIC_API_URL=http://localhost:8000` and set `API_INTERNAL_URL=http://127.0.0.1:8000`. Both must point to the running API.
+
+### 2. Create the database and apply migrations
+
+Create the database using your PostgreSQL user; this example uses `postgres`:
+
+```bash
+createdb -h localhost -U postgres deedspan
 cd apps/api
-cp .env.example .env             # set DATABASE_URL + SECRET_KEY
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e .
-alembic upgrade head
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
-
-# 4. Web (new terminal)
-cd apps/web
-cp .env.example .env.local       # NEXT_PUBLIC_API_URL=http://localhost:8000
-pnpm dev
-
-# 5. Mobile (new terminal — optional)
-cd apps/mobile
-cp .env.example .env             # set EXPO_PUBLIC_API_URL to your Mac's LAN IP
-pnpm start                       # then press `i` for iOS simulator or scan QR with Expo Go
+uv sync
+uv run alembic upgrade head
+cd ../..
 ```
 
-Web on `:3000`, API on `:8000`, Metro on `:8081`.
+`uv sync` creates the backend's virtual environment using the pinned Python 3.12 version. Migrations create the database tables.
 
-> **For physical-device testing** the mobile app needs your Mac's LAN IP in
-> `EXPO_PUBLIC_API_URL` (e.g. `http://192.168.1.42:8000`) — `localhost` from
-> the phone points to itself. The API must also be bound to `0.0.0.0` (not
-> just `127.0.0.1`) so the phone can reach it.
-
-## Layout
-
-```
-apps/
-  api/      FastAPI backend (cookie + bearer auth)
-  web/      Next.js frontend
-  mobile/   Expo / React Native app
-```
-
-## First admin
-
-After registering your first user:
-
-```sql
-UPDATE users SET role = 'admin' WHERE email = 'you@example.com';
-```
-
-## Scripts
+### 3. Start the app
 
 ```bash
-pnpm dev:web        # frontend
-pnpm dev:api        # backend
-pnpm dev:mobile     # Expo dev server
-pnpm build:web
+npm run project
 ```
 
-## Notes
+This uses `concurrently` to start the web app and API together, with labeled logs. The commands are defined in the root `package.json`; `uv run` selects the backend's virtual environment on each operating system. Open [localhost:3000](http://localhost:3000) and register an account. Interactive API documentation is available at [localhost:8000/docs](http://localhost:8000/docs). Press **Ctrl+C** to stop both services; PostgreSQL runs separately.
 
-- pnpm uses a hoisted `node_modules` layout (`.npmrc` → `node-linker=hoisted`) so React Native / Metro can resolve transitive deps.
-- The mobile app currently uses the legacy `/goals` endpoints. Web uses the newer `/goal-plans` model, presented as Goals in the UI. Mobile parity is a follow-up.
-- See [AIREADME.md](AIREADME.md) for the full technical brief.
+Keep port 3000 free. If you use another web port, update `FRONTEND_URL` in the API configuration to match and restart the API so browser requests are allowed.
+
+To run either service separately, use `npm run dev:web` or `npm run dev:api` from the root. To check the web app:
+
+```bash
+npm --prefix apps/web run typecheck
+npm --prefix apps/web run build
+```
+
+### Optional: mobile
+
+Copy `apps/mobile/.env.example` to `apps/mobile/.env`, set `EXPO_PUBLIC_API_URL` for your simulator or device, then run:
+
+```bash
+npm --prefix apps/mobile start
+```
+
+For a physical phone, use your computer's LAN IP and the same network. Start the API separately with `uv run uvicorn app.main:app --reload --host 0.0.0.0 --port 8000` from `apps/api` so the phone can reach it.
+
+## Current status
+
+The web and mobile apps are not yet at feature parity. Mobile uses the older `/goals` API and a free-text reflection screen; web uses `/goal-plans`, linked tasks, and structured journal entries. Goals created through the two APIs are separate records.
+
+`deedspan_v0_frontend` is a standalone design prototype with demo data. The API-connected web application lives in `apps/web`.

@@ -96,7 +96,7 @@ export default function SettingsScreen() {
       <View style={{ alignItems: "center", marginTop: 8 }}>
         <Feather name="moon" size={12} color={tokens.c.muted} />
         <Text style={{ fontSize: 11, color: tokens.c.muted, marginTop: 6 }}>
-          Profectus · 0.1.0
+          DeedSpan · 0.1.0
         </Text>
       </View>
     </Screen>

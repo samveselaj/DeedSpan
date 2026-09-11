@@ -1,18 +1,18 @@
 {
   "expo": {
-    "name": "Profectus",
-    "slug": "aether",
-    "scheme": "aether",
+    "name": "DeedSpan",
+    "slug": "deedspan",
+    "scheme": "deedspan",
     "version": "0.1.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "dev.aether.app"
+      "bundleIdentifier": "dev.deedspan.app"
     },
     "android": {
-      "package": "dev.aether.app",
+      "package": "dev.deedspan.app",
       "adaptiveIcon": {
         "backgroundColor": "#ffffff"
       }

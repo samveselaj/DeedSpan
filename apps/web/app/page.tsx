@@ -13,10 +13,10 @@ export default async function LandingPage() {
     <div className="min-h-screen flex flex-col">
       <header className="h-14 flex items-center justify-between px-6">
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 rounded-lg bg-accent/15 flex items-center justify-center">
-            <div className="h-2.5 w-2.5 rounded-full bg-accent" />
+          <div className="h-7 w-7 rounded-lg bg-accent text-accent-fg flex items-center justify-center">
+            <span className="font-serif text-base">D</span>
           </div>
-          <span className="text-sm font-semibold tracking-tight">Profectus</span>
+          <span className="text-sm font-semibold tracking-tight">DeedSpan</span>
         </div>
         <div className="flex items-center gap-2">
           <ThemeToggle />

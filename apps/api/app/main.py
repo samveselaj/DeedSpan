@@ -10,7 +10,7 @@ from app.routers import admin, auth, goal_plans, goals, habits, me, reflections,
 
 settings = get_settings()
 
-app = FastAPI(title="Profectus API", version="0.1.0")
+app = FastAPI(title="DeedSpan API", version="0.1.0")
 
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)

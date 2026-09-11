@@ -1,7 +1,7 @@
 [project]
-name = "aether-api"
+name = "deedspan-api"
 version = "0.1.0"
-description = "Profectus API"
+description = "DeedSpan API"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi>=0.115.0",

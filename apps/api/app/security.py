@@ -10,8 +10,8 @@ settings = get_settings()
 
 _hasher = PasswordHasher(time_cost=3, memory_cost=64 * 1024, parallelism=2)
 
-SESSION_COOKIE = "aether_sid"
-CSRF_COOKIE = "aether_csrf"
+SESSION_COOKIE = "deedspan_sid"
+CSRF_COOKIE = "deedspan_csrf"
 CSRF_HEADER = "X-CSRF-Token"
 
 

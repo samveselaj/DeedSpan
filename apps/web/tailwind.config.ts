@@ -9,6 +9,8 @@ const config: Config = {
     extend: {
       colors: {
         bg: "hsl(var(--bg))",
+        sage: "hsl(var(--sage))",
+        ink: "hsl(var(--ink))",
         surface: "hsl(var(--surface))",
         border: "hsl(var(--border))",
         muted: "hsl(var(--muted))",
@@ -25,8 +27,8 @@ const config: Config = {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],
       },
       borderRadius: {
-        xl: "14px",
-        "2xl": "20px",
+        xl: "11px",
+        "2xl": "12px",
       },
       boxShadow: {
         soft: "0 1px 2px hsl(var(--shadow) / 0.04), 0 4px 12px hsl(var(--shadow) / 0.04)",

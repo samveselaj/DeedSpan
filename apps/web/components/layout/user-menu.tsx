@@ -17,7 +17,7 @@ import type { User } from "@/lib/types";
 
 export function UserMenu({ user, children }: { user: User; children: React.ReactNode }) {
   const router = useRouter();
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme } = useTheme();
 
   async function handleLogout() {
     try {
@@ -35,8 +35,8 @@ export function UserMenu({ user, children }: { user: User; children: React.React
       <DropdownMenuContent align="end" side="top">
         <DropdownMenuLabel>{user.email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onSelect={() => setTheme(theme === "dark" ? "light" : "dark")}>
-          {theme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+        <DropdownMenuItem onSelect={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}>
+          {resolvedTheme === "dark" ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
           Toggle theme
         </DropdownMenuItem>
         <DropdownMenuSeparator />

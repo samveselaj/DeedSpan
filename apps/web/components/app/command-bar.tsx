@@ -29,10 +29,10 @@ export function CommandBar() {
     };
     const trigger = () => setOpen(true);
     document.addEventListener("keydown", down);
-    window.addEventListener("aether:command-open", trigger);
+    window.addEventListener("deedspan:command-open", trigger);
     return () => {
       document.removeEventListener("keydown", down);
-      window.removeEventListener("aether:command-open", trigger);
+      window.removeEventListener("deedspan:command-open", trigger);
     };
   }, []);
 

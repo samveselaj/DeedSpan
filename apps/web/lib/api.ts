@@ -1,6 +1,6 @@
 const PUBLIC_API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
-const CSRF_COOKIE = "aether_csrf";
+const CSRF_COOKIE = "deedspan_csrf";
 const CSRF_HEADER = "X-CSRF-Token";
 
 export type FetchOptions = RequestInit & { json?: unknown };

@@ -1,4 +1,4 @@
-# Profectus — Technical Brief (for AI review)
+# Deedspan — Technical Brief (for AI review)
 
 > A self-contained description of the codebase so another assistant can reason about and critique it without filesystem access. Honest about tradeoffs and gaps.
 
@@ -6,7 +6,7 @@
 
 ## 1. What it is
 
-Profectus is a small productivity & accountability MVP shipped as three apps in one monorepo:
+Deedspan is a small productivity & accountability MVP shipped as three apps in one monorepo:
 
 - **Web** (`apps/web`) — full feature surface incl. admin
 - **Mobile** (`apps/mobile`) — Expo/React Native, user-facing features only
@@ -52,7 +52,7 @@ A single user signs in, captures tasks, builds **goals** for fixed periods (this
 **Database** — PostgreSQL 15+ (one DB; soft-delete where users need recovery; partial unique indexes used for "one per period" constraints)
 
 **Auth** — opaque session IDs in Postgres, two presentation modes:
-- **Web cookies** — HTTP-only `aether_sid` + non-HttpOnly `aether_csrf` (double-submit)
+- **Web cookies** — HTTP-only `deedspan_sid` + non-HttpOnly `deedspan_csrf` (double-submit)
 - **Mobile bearer** — `Authorization: Bearer <session_id>`, CSRF is skipped
 
 No Docker, no Redis, no Celery, no JWTs, no microservices, no GraphQL/tRPC, no Firebase/Supabase.
@@ -62,7 +62,7 @@ No Docker, no Redis, no Celery, no JWTs, no microservices, no GraphQL/tRPC, no F
 ## 3. Repository layout
 
 ```
-aether/
+deedspan/
 ├── apps/
 │   ├── api/                            # FastAPI backend
 │   │   ├── app/
@@ -145,8 +145,8 @@ aether/
 Both modes resolve to the **same `sessions` table**. The difference is purely transport.
 
 **Cookie mode (web):**
-- `aether_sid` — HttpOnly, Secure (prod), SameSite=Lax, 256-bit random URL-safe ID; opaque
-- `aether_csrf` — same flags except **not HttpOnly** (JS reads it to mirror in `X-CSRF-Token` header)
+- `deedspan_sid` — HttpOnly, Secure (prod), SameSite=Lax, 256-bit random URL-safe ID; opaque
+- `deedspan_csrf` — same flags except **not HttpOnly** (JS reads it to mirror in `X-CSRF-Token` header)
 - `POST /auth/register`, `POST /auth/login` set both cookies on the response
 
 **Bearer mode (mobile):**
@@ -156,9 +156,9 @@ Both modes resolve to the **same `sessions` table**. The difference is purely tr
 - **CSRF is skipped** — bearer requests cannot be cross-site forged by a victim's browser
 
 **Shared resolver (`deps.get_current_user`):**
-1. Prefer `Authorization: Bearer <token>` if present, else fall back to `aether_sid` cookie
+1. Prefer `Authorization: Bearer <token>` if present, else fall back to `deedspan_sid` cookie
 2. Join `sessions` + `users` → 401 if missing / expired / user disabled
-3. **If method is unsafe AND auth was cookie-based**: enforce `X-CSRF-Token` == `aether_csrf` cookie == `sessions.csrf_token`
+3. **If method is unsafe AND auth was cookie-based**: enforce `X-CSRF-Token` == `deedspan_csrf` cookie == `sessions.csrf_token`
 4. Throttled `last_seen_at` bump (writes only if > 60s stale)
 5. Attaches `request.state.session` and `request.state.auth_method` for downstream use
 
@@ -268,13 +268,13 @@ The dashboard now shows the **current week's goal** as a clickable summary card.
 ### 5.5 Layout shell & mobile (web) responsiveness
 
 Desktop: persistent sidebar (`hidden md:flex`, width 60).
-Mobile (`<768px`): sidebar is hidden. The Topbar shows a hamburger button that dispatches a `aether:nav-open` custom event. A `MobileNav` component (Radix Dialog, slide-from-left) listens for it and renders the same `NavContent` component as the desktop sidebar — single source of truth for nav items.
+Mobile (`<768px`): sidebar is hidden. The Topbar shows a hamburger button that dispatches a `deedspan:nav-open` custom event. A `MobileNav` component (Radix Dialog, slide-from-left) listens for it and renders the same `NavContent` component as the desktop sidebar — single source of truth for nav items.
 
 Admin layout has its own `AdminTopbar` with the same hamburger pattern.
 
 ### 5.6 Command bar (⌘K)
 
-Global. Uses `cmdk` inside a Radix Dialog with an `sr-only` `DialogTitle` (a11y). Two groups: **Create** (quick-add task from input text) and **Navigate** (jumps to a route). Triggers: ⌘/Ctrl+K, the "Quick" button in Topbar, or any `window.dispatchEvent(new Event("aether:command-open"))`.
+Global. Uses `cmdk` inside a Radix Dialog with an `sr-only` `DialogTitle` (a11y). Two groups: **Create** (quick-add task from input text) and **Navigate** (jumps to a route). Triggers: ⌘/Ctrl+K, the "Quick" button in Topbar, or any `window.dispatchEvent(new Event("deedspan:command-open"))`.
 
 ### 5.7 Theme system
 
@@ -287,7 +287,7 @@ Global. Uses `cmdk` inside a Radix Dialog with an `sr-only` `DialogTitle` (a11y)
 
 ### 5.8 Middleware
 
-`middleware.ts` only checks for `aether_sid` cookie presence on protected prefixes; redirects to `/login?next=…` if missing. **Does not validate** the session — real validation happens server-side in `requireUser()` via `/me`. Window of trust is one request.
+`middleware.ts` only checks for `deedspan_sid` cookie presence on protected prefixes; redirects to `/login?next=…` if missing. **Does not validate** the session — real validation happens server-side in `requireUser()` via `/me`. Window of trust is one request.
 
 ### 5.9 Next config
 
@@ -577,7 +577,7 @@ No streaks-as-pressure, no badges, no points, no "better luck next time", no con
 4. **Middleware only checks cookie presence.** Real validation is server-side. Edge-friendly; window of trust is one request.
 5. **Two API client files on web** (`api.ts` + `api-server.ts`). Forced split because Client Components can't import `next/headers`.
 6. **Bearer for mobile, cookies for web** — instead of unifying. Different transports suit different threat models; one shared `sessions` table behind both.
-7. **Separate `/auth/mobile/*` endpoints** — instead of `X-Aether-Client` header detection. Explicit > clever.
+7. **Separate `/auth/mobile/*` endpoints** — instead of `X-Deedspan-Client` header detection. Explicit > clever.
 8. **`router.refresh()` after mutations** instead of SWR/React Query. Optimistic UI bridges the latency. RSC re-renders are cheap at this scale.
 9. **Hand-rolled UI primitives (no `shadcn add`).** Faster scaffolding, smaller surface, own the code.
 10. **Composite primary keys** for `habit_entries` and `reflections`. Natural keys, clean upserts via `ON CONFLICT`.

@@ -4,31 +4,37 @@
 
 @layer base {
   :root {
-    --bg: 0 0% 99%;
-    --surface: 0 0% 100%;
-    --fg: 220 13% 12%;
-    --muted: 220 9% 46%;
-    --subtle: 220 14% 96%;
-    --border: 220 13% 91%;
-    --accent: 218 90% 52%;
-    --accent-fg: 0 0% 100%;
-    --danger: 0 70% 55%;
-    --success: 152 56% 42%;
-    --shadow: 220 40% 10%;
+    --bg: 42.86 21.21% 93.53%;
+    --surface: 45.00 28.57% 97.25%;
+    --fg: 90.00 3.70% 10.59%;
+    --muted: 46.67 3.93% 44.90%;
+    --subtle: 42.00 17.24% 88.63%;
+    --border: 43.64 14.29% 84.90%;
+    --accent: 15.24 53.85% 54.12%;
+    --accent-fg: 26.67 100.00% 98.24%;
+    --danger: 3.66 52.19% 50.78%;
+    --success: 105.00 11.67% 47.06%;
+    --shadow: 90.00 6.25% 18.82%;
+    --sage: 98 12% 62%;
+    --ink: 90 6% 19%;
+    color-scheme: light;
   }
 
   .dark {
-    --bg: 222 14% 7%;
-    --surface: 222 14% 10%;
-    --fg: 210 20% 96%;
-    --muted: 215 12% 65%;
-    --subtle: 222 12% 14%;
-    --border: 222 12% 18%;
-    --accent: 213 94% 68%;
-    --accent-fg: 0 0% 100%;
-    --danger: 0 70% 60%;
-    --success: 152 56% 50%;
-    --shadow: 0 0% 0%;
+    --bg: 120.00 4.35% 9.02%;
+    --surface: 105.00 6.06% 12.94%;
+    --fg: 51.43 16.28% 91.57%;
+    --muted: 86.67 4.11% 57.06%;
+    --subtle: 108.00 5.75% 17.06%;
+    --border: 102.86 6.31% 21.76%;
+    --accent: 17.65 61.03% 61.76%;
+    --accent-fg: 25.71 17.95% 7.65%;
+    --danger: 5.55 67.23% 65.29%;
+    --success: 113.57 15.56% 64.71%;
+    --shadow: 0.00 0.00% 0.00%;
+    --sage: 114 16% 65%;
+    --ink: 90 6% 19%;
+    color-scheme: dark;
   }
 
   * {
@@ -56,5 +62,13 @@
 @layer utilities {
   .ring-focus {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/40 focus-visible:ring-offset-2 focus-visible:ring-offset-bg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

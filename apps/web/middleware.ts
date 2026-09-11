@@ -1,6 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 
-const SESSION_COOKIE = "aether_sid";
+const SESSION_COOKIE = "deedspan_sid";
 
 const PROTECTED_PREFIXES = ["/dashboard", "/tasks", "/goals", "/habits", "/reflect", "/admin"];
 

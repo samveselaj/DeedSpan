@@ -108,7 +108,7 @@ export default function GoalsScreen() {
         <Input
           value={title}
           onChangeText={setTitle}
-          placeholder="e.g. Ship Profectus v1"
+          placeholder="e.g. Ship DeedSpan v1"
           onSubmitEditing={add}
           returnKeyType="done"
         />
